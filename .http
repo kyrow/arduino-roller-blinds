@@ -1,0 +1,13 @@
+@url={{$dotenv url}}
+
+###
+GET {{url}}/open
+
+###
+GET {{url}}/close
+
+###
+GET {{url}}/time
+
+###
+GET {{url}}/status
