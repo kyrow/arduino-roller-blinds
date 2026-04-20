@@ -19,6 +19,7 @@ bool scheduleEnabled = SCHEDULE_ENABLED;
 int lastScheduleDay = -1;
 bool openedToday = false;
 bool closedToday = false;
+int lastTimeSyncDay = -1;
 
 void handleOpen()
 {
@@ -135,6 +136,25 @@ void handleSchedule()
 void handleNotFound()
 {
   server.send(404, "application/json", "{\"error\":\"not found\"}");
+}
+
+void checkDailyTimeSync()
+{
+  struct tm timeinfo;
+  if (!getLocalTime(&timeinfo))
+    return;
+
+  int currentDay = timeinfo.tm_yday;
+
+  if (currentDay != lastTimeSyncDay &&
+      timeinfo.tm_hour == 0 &&
+      timeinfo.tm_min == 0 &&
+      WiFi.status() == WL_CONNECTED)
+  {
+    lastTimeSyncDay = currentDay;
+    Serial.println("Daily NTP resync at 00:00");
+    configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
+  }
 }
 
 void checkSchedule()
@@ -304,6 +324,7 @@ void loop()
   if (nowMillis - lastScheduleCheck >= 1000)
   {
     lastScheduleCheck = nowMillis;
+    checkDailyTimeSync();
     checkSchedule();
   }
 
