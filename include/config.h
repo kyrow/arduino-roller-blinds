@@ -1,5 +1,5 @@
-#define WIFI_SSID "WIFI-2980"
-#define WIFI_PASS "2380baf2"
+// WIFI_SSID и WIFI_PASS подставляются из .env через load_env.py
+// (см. extra_scripts в platformio.ini)
 #define HOSTNAME "http-roller-blind"
 
 // NTP Settings
